@@ -1,4 +1,4 @@
-[![DOI](https://zenodo.org/badge/169021695.svg)](https://zenodo.org/badge/latestdoi/169021695)
+[![DOI](https://zenodo.org/badge/306959618.svg)](https://zenodo.org/badge/latestdoi/306959618)
 # untangling-visual-search
 
 Experiments to test whether the untangling mechanism proposed for object recognition 
@@ -38,5 +38,5 @@ DARPA cooperative agreement HR0011-18-2-0019
 R. Goldstone and L. Smith, Indiana University Bloomington.
 
 ## Citation
-Please cite the DOI for this code:
-[![DOI](https://zenodo.org/badge/169021695.svg)](https://zenodo.org/badge/latestdoi/169021695)
+If you use / adapt this code, please cite its DOI:
+[![DOI](https://zenodo.org/badge/306959618.svg)](https://zenodo.org/badge/latestdoi/306959618)
