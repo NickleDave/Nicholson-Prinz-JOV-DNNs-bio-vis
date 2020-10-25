@@ -1,44 +1,32 @@
 [![DOI](https://zenodo.org/badge/169021695.svg)](https://zenodo.org/badge/latestdoi/169021695)
-[![PyPI version](https://badge.fury.io/py/visual-search-nets.svg)](https://badge.fury.io/py/visual-search-nets)
-# visual-search-nets
+# untangling-visual-search
 
-Experiments to measure the behavior of deep neural networks performing 
-a visual search task.
-
-For some background and a summary of the results, please see [this Jupyter notebook](./docs/notebooks/results.ipynb).
+Experiments to test whether the untangling mechanism proposed for object recognition 
+can also account for behavior measured in visual search tasks, using 
+deep neural network models of the primate ventral visual stream
 
 ## Installation
-Experiments were run using Anaconda on Ubuntu 16.04.
-The following commands were used to create the environment:
+Experiments were run in an environment created with [`conda`](https://docs.conda.io/en/latest/) on Ubuntu 16.04.
+
+There are two main dependencies:  
+* the [`visual-search-nets` package](https://github.com/NickleDave/visual-search-nets)
+* [`jupyterlab`](http://jupyterlab.io/)
+
+A similar environment can be created with `conda` on Ubuntu using the `spec-file.txt` in this repository as follows:
 
 ```console
-tu@computi:~$ conda create -n searchnets python=3.6 numpy matplotlib imageio joblib tensorflow-gpu 
-tu@computi:~$ source activate searchnets
-tu@computi:~$ git clone https://github.com/NickleDave/visual-search-nets.git
-tu@computi:~$ cd ./visual-search-nets
-tu@computi:~$ pip install .
+$ git clone https://github.com/NickleDave/untangling-visual-search.git
+$ cd untangling-visual-search
+$ conda create --name untangling-search --file spec-file.txt
 ```
 
-## usage
-Installing this package (by running `pip install .` in the source directory) makes it 
-possible to run the experiments from the command line with the `searchnets` command, like so:
-```console
-tu@computi:~$ searchnets train config.ini
-```  
-The command-line interface accepts arguments with the syntax `searchnets command config.ini`,  
-where `command` is some command to run, and `config.ini` is the name of a configuration file 
-with options that specify how the command will be executed.  
-For details on the commands, see [this page in the docs](./docs/cli.md).
-For details on the `config.ini` files, please see [this other page](./docs/config.ini.md).
+You may also be able to create a suitable environment on other linux platforms using the `environment.yml` file.
 
-## Data
-Data is deposited here:
-<https://figshare.com/articles/visual-search-nets/7688840>
-
-## Replicating experiments
-The `Makefile` replicates the experiments.
 ```console
-tu@computi:~$ make all
+$ git clone https://github.com/NickleDave/untangling-visual-search.git
+$ cd untangling-visual-search
+$ conda env create -f environment.yml
+
 ```
 
 ## Acknowledgements
