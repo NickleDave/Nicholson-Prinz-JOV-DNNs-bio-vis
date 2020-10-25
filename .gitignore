@@ -1,6 +1,4 @@
-# buildstuffs and other ephemera
-build/
-dist/
+# python + jupyter + MacOS
 .ipynb_checkpoints/
 .idea
 */__pycache__/*
@@ -21,6 +19,3 @@ results/checkpoints/*/
 results/csv/
 results/searchstims/
 results/VSD/
-
-# tests
-tests/test_data/visual_search_stimuli
