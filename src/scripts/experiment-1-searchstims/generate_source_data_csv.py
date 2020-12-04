@@ -14,8 +14,10 @@ import searchnets
 def main(results_gz_root,
          source_data_root,
          all_csv_filename,
+         acc_diff_csv_filename,
          stim_acc_diff_csv_filename,
          net_acc_diff_csv_filename,
+         acc_diff_by_stim_csv_filename,
          net_names,
          methods,
          modes,
@@ -33,6 +35,10 @@ def main(results_gz_root,
     all_csv_filename : str
         filename for .csv saved that contains results from **all** results.gz files.
         Saved in source_data_root.
+    acc_diff_csv_filename : str
+        filename for .csv should be saved that contains group analysis derived from all results,
+        with difference in accuracy between set size 1 and 8.
+        Saved in source_data_root.
     stim_acc_diff_csv_filename : str
         filename for .csv saved that contains group analysis derived from all results,
         with stimulus type column sorted by difference in accuracy between set size 1 and 8.
@@ -40,6 +46,11 @@ def main(results_gz_root,
     net_acc_diff_csv_filename : str
         filename for .csv saved that contains group analysis derived from all results,
         with net name column sorted by mean accuracy across all stimulus types.
+        Saved in source_data_root.
+    acc_diff_by_stim_csv_filename : str
+        filename for .csv saved that contains group analysis derived from all results,
+        with difference in accuracy between set size 1 and 8,
+        pivoted so that columns are visual search stimulus type.
         Saved in source_data_root.
     net_names : list
         of str, neural network architecture names
@@ -134,10 +145,26 @@ def main(results_gz_root,
     net_acc_diff_df = net_acc_diff_df.reset_index()
     net_acc_diff_df = net_acc_diff_df.sort_values(by='acc_diff', ascending=False)
 
+    # no idea how much I am abusing the Pandas API, just trying to make a pivot table into a data frame here
+    # https://stackoverflow.com/a/42708606/4906855
+    # want the columns to be (sorted) stimulus type,
+    # and rows be (sorted) network names,
+    # with values in cells being effect size
+    df_acc_diff_only = df_acc_diff[['net_name', 'stimulus', 'acc_diff']]
+    df_acc_diff_by_stim = df_acc_diff_only.pivot_table(index='net_name', columns='stimulus')
+    df_acc_diff_by_stim.columns = df_acc_diff_by_stim.columns.get_level_values(1)
+    df_acc_diff_by_stim = pd.DataFrame(df_acc_diff_by_stim.to_records())
+    df_acc_diff_by_stim = df_acc_diff_by_stim.set_index('net_name')
+    df_acc_diff_by_stim = df_acc_diff_by_stim.reindex(net_acc_diff_df['net_name'].values.tolist())
+    df_acc_diff_by_stim = df_acc_diff_by_stim[stim_acc_diff_df['stimulus'].values.tolist()]
+
     # finally, save csvs
-    df_all.to_csv(source_data_root.joinpath(all_csv_filename))
-    stim_acc_diff_df.to_csv(source_data_root.joinpath(stim_acc_diff_csv_filename))
-    net_acc_diff_df.to_csv(source_data_root.joinpath(net_acc_diff_csv_filename))
+    df_all.to_csv(source_data_root.joinpath(all_csv_filename), index=False)
+    df_acc_diff.to_csv(source_data_root.joinpath(acc_diff_csv_filename), index=False)
+    stim_acc_diff_df.to_csv(source_data_root.joinpath(stim_acc_diff_csv_filename), index=False)
+    net_acc_diff_df.to_csv(source_data_root.joinpath(net_acc_diff_csv_filename), index=False)
+    # for this csv, the index is "net names" -- we want to keep it
+    df_acc_diff_by_stim.to_csv(source_data_root.joinpath(acc_diff_by_stim_csv_filename))
 
 
 ROOT = pyprojroot.here()
@@ -179,16 +206,30 @@ def get_parser():
                         help=('path to root of directory where "source data" csv files '
                               'that are generated should be saved'))
     parser.add_argument('--all_csv_filename', default='all.csv',
-                        help=('filename for .csv should be saved that contains results from **all** results.gz files. '
+                        help=('filename for .csv that should be saved '
+                              'that contains results from **all** results.gz files. '
                               'Saved in source_data_root.'))
+    parser.add_argument('--acc_diff_csv_filename', default='acc_diff.csv',
+                        help=("filename for .csv should be saved "
+                              "that contains group analysis derived from all results, "
+                              "with difference in accuracy between set size 1 and 8. "
+                              "Saved in source_data_root"))
     parser.add_argument('--stim_acc_diff_csv_filename', default='stim_acc_diff.csv',
-                        help=("filename for .csv should be saved that contains group analysis derived from all results, "
+                        help=("filename for .csv should be saved "
+                              "that contains group analysis derived from all results, "
                               "with stimulus type column sorted by difference in accuracy between set size 1 and 8. "
                               "Saved in source_data_root"))
     parser.add_argument('--net_acc_diff_csv_filename', default='net_acc_diff.csv',
-                        help=("filename for .csv should be saved that contains group analysis derived from all results, "
+                        help=("filename for .csv should be saved "
+                              "that contains group analysis derived from all results, "
                               "with net name column sorted by mean accuracy across all stimulus types."
                               "Saved in source_data_root."))
+    parser.add_argument('--acc_diff_by_stim_csv_filename', default='acc_diff_by_stim.csv',
+                        help=("filename for .csv should be saved "
+                              "that contains group analysis derived from all results, "
+                              "with difference in accuracy between set size 1 and 8, "
+                              "pivoted so that columns are visual search stimulus type. "
+                              "Saved in source_data_root"))
     parser.add_argument('--net_names', default=NET_NAMES,
                         help='comma-separated list of neural network architecture names')
     parser.add_argument('--methods', default=METHODS,
@@ -210,8 +251,10 @@ if __name__ == '__main__':
     main(results_gz_root=args.results_gz_root,
          source_data_root=args.source_data_root,
          all_csv_filename=args.all_csv_filename,
+         acc_diff_csv_filename=args.acc_diff_csv_filename,
          stim_acc_diff_csv_filename=args.stim_acc_diff_csv_filename,
          net_acc_diff_csv_filename=args.net_acc_diff_csv_filename,
+         acc_diff_by_stim_csv_filename=args.acc_diff_by_stim_csv_filename,
          net_names=args.net_names,
          methods=args.methods,
          modes=args.modes,
