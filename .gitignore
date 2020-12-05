@@ -17,5 +17,5 @@ data/for_figshare/*
 
 results/checkpoints/*/
 results/csv/
-results/searchstims/
+results/searchstims/checkpoints
 results/VSD/
