@@ -77,6 +77,10 @@ def main(results_gz_root,
 
     for net_name in net_names:
         for method in methods:
+            if method not in METHODS:
+                raise ValueError(
+                    f'invalid method: {method}, must be one of: {METHODS}'
+                )
             for mode in modes:
                 results_gz_path = sorted(results_gz_root.glob(f'**/*{net_name}*{method}*gz'))
 
@@ -84,6 +88,10 @@ def main(results_gz_root,
                     results_gz_path = [results_gz for results_gz in results_gz_path if 'detect' not in str(results_gz)]
                 elif mode == 'detect':
                     results_gz_path = [results_gz for results_gz in results_gz_path if 'detect' in str(results_gz)]
+                else:
+                    raise ValueError(
+                        f'invalid mode: {mode}, must be one of: {MODES}'
+                    )
 
                 if len(results_gz_path) != 1:
                     raise ValueError(f'found more than one results.gz file: {results_gz_path}')
@@ -231,11 +239,14 @@ def get_parser():
                               "pivoted so that columns are visual search stimulus type. "
                               "Saved in source_data_root"))
     parser.add_argument('--net_names', default=NET_NAMES,
-                        help='comma-separated list of neural network architecture names')
+                        help='comma-separated list of neural network architecture names',
+                        type=lambda net_names: net_names.split(','))
     parser.add_argument('--methods', default=METHODS,
-                        help='comma-separated list of training "methods", must be in {"transfer", "initialize"}')
+                        help='comma-separated list of training "methods", must be in {"transfer", "initialize"}',
+                        type=lambda methods: methods.split(','))
     parser.add_argument('--modes', default=MODES,
-                        help='comma-separate list of training "modes", must be in {"classify","detect"}')
+                        help='comma-separate list of training "modes", must be in {"classify","detect"}',
+                        type=lambda modes: modes.split(','))
     parser.add_argument('--learning_rate', default=LEARNING_RATE,
                         help=f'float, learning rate value for all experiments. Default is {LEARNING_RATE}')
     parser.add_argument('--alexnet_split_csv_path', default=alexnet_split_csv_path,
