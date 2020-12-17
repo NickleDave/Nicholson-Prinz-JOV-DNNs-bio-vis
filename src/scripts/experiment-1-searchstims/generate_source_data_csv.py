@@ -32,6 +32,9 @@ def main(results_gz_root,
     ----------
     results_gz_root : str, Path
         path to root of directory that has results.gz files created by `searchnets test` command
+    source_data_root : str, path
+        path to root of directory where csv files
+        that are the source data for figures should be saved.
     all_csv_filename : str
         filename for .csv saved that contains results from **all** results.gz files.
         Saved in source_data_root.
