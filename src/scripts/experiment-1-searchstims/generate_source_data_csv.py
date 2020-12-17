@@ -31,7 +31,7 @@ def main(results_gz_root,
     Parameters
     ----------
     results_gz_root : str, Path
-        path to root of directory that has results.gz files created by searchstims test command
+        path to root of directory that has results.gz files created by `searchnets test` command
     all_csv_filename : str
         filename for .csv saved that contains results from **all** results.gz files.
         Saved in source_data_root.
