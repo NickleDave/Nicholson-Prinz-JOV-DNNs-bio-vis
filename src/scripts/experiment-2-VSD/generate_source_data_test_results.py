@@ -7,19 +7,20 @@ import pyprojroot
 import pandas as pd
 
 
-def main(source_data_root,
-         test_results_root,
+def main(test_results_root,
+         source_data_root,
          all_test_results_csv_filename,
          long_test_results_csv_filename):
     """generate .csv files used as source data for figures corresponding to experiments
     carried out with Visual Search Difficulty + PASCAL VOC datasets
+
     Parameters
     ----------
+    test_results_root : str, Path
+        path to root of directory that has results.gz files created by `searchnets test` command
     source_data_root : str, Path
         path to root of directory where csv files
         that are the source data for figures should be saved.
-    test_results_root : str, Path
-        path to root of directory that has results.gz files created by `searchnets test` command
     all_test_results_csv_filename : str
         filename for .csv saved that contains results from **all** results.gz files.
         Saved in source_data_root.
@@ -78,11 +79,11 @@ def get_parser():
                         help=('path to root of directory where "source data" csv files '
                               'that are generated should be saved'),
                         default=SOURCE_DATA_ROOT)
-    parser.add_argument('--all_test_results_csv_filename', default='all.csv',
+    parser.add_argument('--all_test_results_csv_filename', default='all_test_results.csv',
                         help=('filename for .csv that should be saved '
                               'that contains results from **all** results.gz files. '
                               'Saved in source_data_root.'))
-    parser.add_argument('--long_test_results_csv_filename', default='acc_diff.csv',
+    parser.add_argument('--long_test_results_csv_filename', default='all_test_results_long_form.csv',
                         help=('''filename for .csv saved that contains all test results, but in "long form", where 
                               'a `metric_name` and `metric_val` column are added, and different metric are all moved
                               to that column ({'acc_largest', 'acc_random', 'f1'}). This "long form" is used for plotting.
@@ -93,7 +94,8 @@ def get_parser():
 if __name__ == '__main__':
     parser = get_parser()
     args = parser.parse_args()
-    main(source_data_root=args.source_data_root,
+    main(test_results_root=args.test_results_root,
+         source_data_root=args.source_data_root,
          all_test_results_csv_filename=args.all_test_results_csv_filename,
          long_test_results_csv_filename=args.long_test_results_csv_filename
          )
