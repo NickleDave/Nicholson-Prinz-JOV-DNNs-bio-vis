@@ -68,6 +68,9 @@ def main(ckpt_root,
         path to root of directory that has checkpoints saved for a specific experiment.
         This script expects the following structure:
         ./results/searchstims/checkpoints/{ckpt_root}/{net_name}{experiment_suffix}
+    source_data_root : str, Path
+        path to root of directory where csv files
+        that are the source data for figures should be saved.
     csv_filename : str
         filename for .csv saved that contains results from **all** results.gz files.
         Saved in source_data_root.
@@ -77,12 +80,6 @@ def main(ckpt_root,
         of str,  training "methods". Valid values are {"transfer", "initialize"}.
     modes : list
         of str, training "modes". Valid values are {"classify","detect"}.
-    alexnet_split_csv_path : str, Path
-        path to .csv that contains dataset splits for "alexnet-sized" searchstim images
-    VGG16_split_csv_path : str, Path
-        path to .csv that contains dataset splits for "VGG16-sized" searchstim images
-    learning_rate
-        float, learning rate value for all experiments. Default is 1e-3.
     """
     ckpt_root = Path(ckpt_root)
     source_data_root = Path(source_data_root)
