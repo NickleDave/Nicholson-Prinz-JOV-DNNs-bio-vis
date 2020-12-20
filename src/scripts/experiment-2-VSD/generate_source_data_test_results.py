@@ -3,8 +3,61 @@
 from argparse import ArgumentParser
 from pathlib import Path
 
+import numpy as np
 import pyprojroot
 import pandas as pd
+
+
+def _t1_summary(series, n_decimals=3):
+    """adapted from tableone package
+
+    https://github.com/tompollard/tableone/blob/5b3d64426e0d6cc9877fe38690fed190510b2c74/tableone/tableone.py#L814
+    """
+    f = '{{:.{}f}} ({{:.{}f}})'.format(n_decimals, n_decimals)
+    return f.format(np.nanmean(series.values), np.nanmean(series.values))
+
+
+LOSS_FUNC_CATEGORY_MAP = {
+    'CE-largest': 0,
+    'CE-random': 1,
+    'BCE': 2,
+}
+
+LOSS_FUNC_CATEGORY_ML_TASK_MAP = {
+    0: 'single-label, largest',
+    1: 'single-label, random',
+    2: 'multi-label',
+}
+
+
+def test_results_table(all_test_results_df,
+                       method='transfer',
+                       groupby=['loss_func_category', 'net_name'],
+                       agg={'acc_largest': _t1_summary, 'acc_random': _t1_summary, 'f1': _t1_summary},
+                       sort_values=['loss_func_category', 'acc_largest'],
+                       ascending=(True, True),
+                       ):
+    df_test_table = all_test_results_df[all_test_results_df.method == method]
+    df_test_table['loss_func_category'] = df_test_table['loss_func'].map(LOSS_FUNC_CATEGORY_MAP)
+    df_test_table = df_test_table.groupby(groupby).agg(agg).sort_values(sort_values, ascending=ascending)
+
+    # rename levels for loss functions category
+    df_test_table.index = df_test_table.index.set_levels(
+        [LOSS_FUNC_CATEGORY_ML_TASK_MAP[lbl] for lbl in df_test_table.index.levels[0]],
+        level=0)
+
+    df_test_table.index = df_test_table.index.set_levels(
+        [lbl.replace('_', ' ') for lbl in df_test_table.index.levels[1]],
+        level=1)
+
+    df_test_table.index = df_test_table.index.rename(names=['task (M.L.)', 'DNN architecture'])
+
+    df_test_table.columns = [
+        'acc. (largest object)',
+        'acc. (random object)',
+        'f1 (macro)',
+    ]
+    return df_test_table
 
 
 def main(test_results_root,
@@ -56,9 +109,17 @@ def main(test_results_root,
                                    var_name=var_name,
                                    value_name=value_name)
 
+    df_test_table_transfer = test_results_table(all_test_results_df, method='transfer')
+    df_test_table_initialize = test_results_table(all_test_results_df, method='initialize')
+
     # finally, save csvs
     all_test_results_df.to_csv(source_data_root.joinpath(all_test_results_csv_filename), index=False)
     long_test_results_df.to_csv(source_data_root.joinpath(long_test_results_csv_filename), index=False)
+    df_test_table_transfer.to_csv(source_data_root.joinpath('test_results_table_transfer.csv'))
+    df_test_table_initialize.to_csv(source_data_root.joinpath('test_results_table_initialize.csv'))
+    # also save tables as Excel files, to import into Word
+    df_test_table_transfer.to_excel(source_data_root.joinpath('test_results_table_transfer.xlsx'))
+    df_test_table_initialize.to_excel(source_data_root.joinpath('test_results_table_initialize.xlsx'))
 
 
 ROOT = pyprojroot.here()
