@@ -1,0 +1,9 @@
+training method,DNN architecture,acc-mean,acc-std
+transfer learning,CORnet S,0.7854687499999999,0.0046343715381453295
+transfer learning,CORnet Z,0.87423828125,0.00526861965766161
+transfer learning,alexnet,0.8778515625000001,0.010893646140190111
+transfer learning,VGG16,0.91427734375,0.012098155084363614
+randomly-initialized weights,alexnet,0.93908203125,0.17223890934119251
+randomly-initialized weights,VGG16,0.9556250000000001,0.04820863268777701
+randomly-initialized weights,CORnet S,0.99978515625,0.0005472734517832901
+randomly-initialized weights,CORnet Z,0.9998046875,0.0002862891816602837

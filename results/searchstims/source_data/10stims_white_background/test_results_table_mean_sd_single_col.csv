@@ -1,0 +1,3 @@
+training method,DNN architecture,acc. Mean (S.D.)
+transfer learning,alexnet,0.913 (0.913)
+randomly-initialized weights,alexnet,0.823 (0.823)
