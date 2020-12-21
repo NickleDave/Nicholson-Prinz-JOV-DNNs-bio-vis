@@ -119,13 +119,16 @@ def main(test_results_root,
         'f1-mean',
         'f1-std',
     ]
+    sort_values=['loss_func_category', ('acc_largest', 'mean')]
     df_test_table_transfer = test_results_table(all_test_results_df,
                                                 method='transfer',
                                                 agg=agg,
+                                                sort_values=sort_values,
                                                 columns=columns)
     df_test_table_initialize = test_results_table(all_test_results_df,
                                                   method='initialize',
                                                   agg=agg,
+                                                  sort_values=sort_values,
                                                   columns=columns)
 
     df_test_table_transfer_mean_sd_single_col = test_results_table(all_test_results_df, method='transfer')
