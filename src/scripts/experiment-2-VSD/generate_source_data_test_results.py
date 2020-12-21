@@ -35,6 +35,7 @@ def test_results_table(all_test_results_df,
                        groupby=['loss_func_category', 'net_name'],
                        agg={'acc_largest': _t1_summary, 'acc_random': _t1_summary, 'f1': _t1_summary},
                        sort_values=['loss_func_category', 'acc_largest'],
+                       columns=['acc. (largest object)', 'acc. (random object)', 'f1 (macro)'],
                        ascending=(True, True),
                        ):
     df_test_table = all_test_results_df[all_test_results_df.method == method]
@@ -52,11 +53,7 @@ def test_results_table(all_test_results_df,
 
     df_test_table.index = df_test_table.index.rename(names=['task (M.L.)', 'DNN architecture'])
 
-    df_test_table.columns = [
-        'acc. (largest object)',
-        'acc. (random object)',
-        'f1 (macro)',
-    ]
+    df_test_table.columns = columns
     return df_test_table
 
 
@@ -64,13 +61,14 @@ def main(test_results_root,
          source_data_root,
          all_test_results_csv_filename,
          long_test_results_csv_filename):
-    """generate .csv files used as source data for figures corresponding to experiments
-    carried out with Visual Search Difficulty + PASCAL VOC datasets
+    """generate .csv files used as source data for tables / figures
+    that report model performance on test set
+    in experiments carried out with Visual Search Difficulty + PASCAL VOC datasets
 
     Parameters
     ----------
     test_results_root : str, Path
-        path to root of directory that has results.gz files created by `searchnets test` command
+        path to root of directory that has test_results.csv files created by `searchnets test` command
     source_data_root : str, Path
         path to root of directory where csv files
         that are the source data for figures should be saved.
@@ -109,17 +107,49 @@ def main(test_results_root,
                                    var_name=var_name,
                                    value_name=value_name)
 
-    df_test_table_transfer = test_results_table(all_test_results_df, method='transfer')
-    df_test_table_initialize = test_results_table(all_test_results_df, method='initialize')
+    # realize after writing the script I need mean and std in separate columns
+    # so I can more easily plot mean test accuracy v. r values from correlation.
+    # Create those here first.
+    agg = {k: ['mean', 'std'] for k in ['acc_largest', 'acc_random', 'f1']}
+    columns = [
+        'acc-largest-mean',
+        'acc-largest-std',
+        'acc-random-mean',
+        'acc-random-std',
+        'f1-mean',
+        'f1-std',
+    ]
+    df_test_table_transfer = test_results_table(all_test_results_df,
+                                                method='transfer',
+                                                agg=agg,
+                                                columns=columns)
+    df_test_table_initialize = test_results_table(all_test_results_df,
+                                                  method='initialize',
+                                                  agg=agg,
+                                                  columns=columns)
+
+    df_test_table_transfer_mean_sd_single_col = test_results_table(all_test_results_df, method='transfer')
+    df_test_table_initialize_mean_sd_single_col = test_results_table(all_test_results_df, method='initialize')
 
     # finally, save csvs
     all_test_results_df.to_csv(source_data_root.joinpath(all_test_results_csv_filename), index=False)
     long_test_results_df.to_csv(source_data_root.joinpath(long_test_results_csv_filename), index=False)
+
     df_test_table_transfer.to_csv(source_data_root.joinpath('test_results_table_transfer.csv'))
     df_test_table_initialize.to_csv(source_data_root.joinpath('test_results_table_initialize.csv'))
+    df_test_table_transfer_mean_sd_single_col.to_csv(source_data_root.joinpath(
+        'test_results_table_transfer_mean_sd_single_col.csv'
+    ))
+    df_test_table_initialize_mean_sd_single_col.to_csv(source_data_root.joinpath(
+        'test_results_table_initialize_mean_sd_single_col.csv'
+    ))
     # also save tables as Excel files, to import into Word
-    df_test_table_transfer.to_excel(source_data_root.joinpath('test_results_table_transfer.xlsx'))
-    df_test_table_initialize.to_excel(source_data_root.joinpath('test_results_table_initialize.xlsx'))
+    df_test_table_transfer_mean_sd_single_col.to_excel(source_data_root.joinpath(
+        'test_results_table_transfer_mean_sd_single_col.xlsx'
+    ))
+    df_test_table_initialize_mean_sd_single_col.to_excel(source_data_root.joinpath(
+        'test_results_table_initialize_mean_sd_single_col.xlsx'
+    ))
 
 
 ROOT = pyprojroot.here()
@@ -133,8 +163,8 @@ SOURCE_DATA_ROOT = VSD_ROOT.joinpath('source_data')
 def get_parser():
     parser = ArgumentParser()
     parser.add_argument('--test_results_root',
-                        help='path to root of directory that has test results .gz files '
-                             'created by searchstims test command',
+                        help='path to root of directory that has test results .csv files '
+                             'created by searchnets test command',
                         default=TEST_RESULTS_ROOT)
     parser.add_argument('--source_data_root',
                         help=('path to root of directory where "source data" csv files '
@@ -147,7 +177,8 @@ def get_parser():
     parser.add_argument('--long_test_results_csv_filename', default='all_test_results_long_form.csv',
                         help=('''filename for .csv saved that contains all test results, but in "long form", where 
                               'a `metric_name` and `metric_val` column are added, and different metric are all moved
-                              to that column ({'acc_largest', 'acc_random', 'f1'}). This "long form" is used for plotting.
+                              to that column ({'acc_largest', 'acc_random', 'f1'}). 
+                              This "long form" is used for plotting.
                               Saved in source_data_root'''))
     return parser
 
