@@ -155,16 +155,33 @@ def main(test_results_root,
 ROOT = pyprojroot.here()
 RESULTS_ROOT = ROOT.joinpath('results')
 
-VSD_ROOT = RESULTS_ROOT.joinpath('VSD')
-TEST_RESULTS_ROOT = VSD_ROOT.joinpath('test_results')
-SOURCE_DATA_ROOT = VSD_ROOT.joinpath('source_data')
+SEARCHSTIMS_ROOT = RESULTS_ROOT.joinpath('searchstims')
+TEST_RESULTS_ROOT = SEARCHSTIMS_ROOT.joinpath('results_gz')
+SOURCE_DATA_ROOT = SEARCHSTIMS_ROOT.joinpath('source_data')
+
+NET_NAMES = [
+    'alexnet',
+    'VGG16',
+    'CORnet_Z',
+    'CORnet_S',
+]
+
+METHODS = [
+    'initialize',
+    'transfer'
+]
+
+MODES = ['classify']
 
 
 def get_parser():
     parser = ArgumentParser()
+    parser.add_argument('--results_gz_root',
+                        help='path to root of directory that has results.gz files created by searchstims test command')
+
     parser.add_argument('--test_results_root',
-                        help='path to root of directory that has test results .gz files '
-                             'created by searchstims test command',
+                        help='path to root of directory that has test results .csv files '
+                             'created by searchnets test command',
                         default=TEST_RESULTS_ROOT)
     parser.add_argument('--source_data_root',
                         help=('path to root of directory where "source data" csv files '
@@ -172,7 +189,7 @@ def get_parser():
                         default=SOURCE_DATA_ROOT)
     parser.add_argument('--all_test_results_csv_filename', default='all_test_results.csv',
                         help=('filename for .csv that should be saved '
-                              'that contains results from **all** results.gz files. '
+                              'that contains results from **all** test_results.csv files. '
                               'Saved in source_data_root.'))
     parser.add_argument('--long_test_results_csv_filename', default='all_test_results_long_form.csv',
                         help=('''filename for .csv saved that contains all test results, but in "long form", where 
