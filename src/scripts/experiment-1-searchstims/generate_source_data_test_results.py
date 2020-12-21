@@ -73,6 +73,8 @@ def main(test_results_root,
         Saved in source_data_root.
    """
     test_results_root = Path(test_results_root)
+    source_data_root = Path(source_data_root)
+
     test_csv_paths = sorted(test_results_root.glob('**/*test_results.csv'))
 
     dfs = []
@@ -118,7 +120,7 @@ RESULTS_ROOT = ROOT.joinpath('results')
 
 SEARCHSTIMS_ROOT = RESULTS_ROOT.joinpath('searchstims')
 TEST_RESULTS_ROOT = SEARCHSTIMS_ROOT.joinpath('results_gz/3stims')
-SOURCE_DATA_ROOT = SEARCHSTIMS_ROOT.joinpath('source_data')
+SOURCE_DATA_ROOT = SEARCHSTIMS_ROOT.joinpath('source_data/3stims')
 
 
 def get_parser():
