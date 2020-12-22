@@ -14,7 +14,7 @@ def _t1_summary(series, n_decimals=3):
     https://github.com/tompollard/tableone/blob/5b3d64426e0d6cc9877fe38690fed190510b2c74/tableone/tableone.py#L814
     """
     f = '{{:.{}f}} ({{:.{}f}})'.format(n_decimals, n_decimals)
-    return f.format(np.nanmean(series.values), np.nanmean(series.values))
+    return f.format(np.nanmean(series.values), np.nanstd(series.values))
 
 
 METHOD_CATEGORY_MAP = {
