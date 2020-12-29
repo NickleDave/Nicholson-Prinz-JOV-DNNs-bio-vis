@@ -102,6 +102,11 @@ def main(source_data_root,
     )
     long_test_results_df.to_csv(source_data_root.joinpath(test_acc_v_r_coeff_csv_filename))
 
+    long_test_results_df.to_excel(source_data_root.joinpath(
+        test_acc_v_r_coeff_csv_filename.replace('.csv', '.xlsx')
+    ))
+
+    
 
 SOURCE_DATA_ROOT = pyprojroot.here().joinpath('results/VSD/source_data')
 RM_CORR_CSV_PATH = '8-bins-quantile-strategy/rm_corr.csv'
