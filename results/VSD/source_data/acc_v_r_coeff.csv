@@ -1,0 +1,13 @@
+,task (M.L.),DNN architecture,loss_func,r,CI95%,dof,power,pval,metric_name,metric_val
+0,"single-label, largest",CORnet Z,CE-largest,-0.93413263948132,"[-0.96, -0.89]",55,1.0,2.8188680257514716e-26,acc-largest-mean,0.5419975828729281
+1,"single-label, largest",alexnet,CE-largest,-0.9483991830184024,"[-0.97, -0.91]",55,1.0,4.131855380414369e-29,acc-largest-mean,0.6515020718232044
+2,"single-label, largest",CORnet S,CE-largest,-0.9411463705117784,"[-0.97, -0.9]",55,1.0,1.3980328232730822e-27,acc-largest-mean,0.7430507596685083
+3,"single-label, largest",VGG16,CE-largest,-0.9397166846127252,"[-0.96, -0.9]",55,1.0,2.6546594536275876e-27,acc-largest-mean,0.7857821132596686
+16,"single-label, random",CORnet Z,CE-random,-0.9451018435116454,"[-0.97, -0.91]",55,1.0,2.173465492549696e-28,acc-random-mean,0.500733770718232
+17,"single-label, random",alexnet,CE-random,-0.9590460404343985,"[-0.98, -0.93]",55,1.0,8.253686221601471e-32,acc-random-mean,0.5868870856353591
+18,"single-label, random",CORnet S,CE-random,-0.9714848111518316,"[-0.98, -0.95]",55,1.0,4.605878128960472e-36,acc-random-mean,0.653962361878453
+19,"single-label, random",VGG16,CE-random,-0.9689061881569,"[-0.98, -0.95]",55,1.0,4.816479794241924e-35,acc-random-mean,0.7088656767955802
+32,multi-label,CORnet Z,BCE,-0.3646015225344666,"[-0.57, -0.11]",55,0.8078623787926121,0.005297183268432785,f1-mean,0.112556489556026
+33,multi-label,alexnet,BCE,-0.9390326549115088,"[-0.96, -0.9]",55,1.0,3.5880167512063726e-27,f1-mean,0.30629583081966016
+34,multi-label,CORnet S,BCE,-0.9227024291043556,"[-0.95, -0.87]",55,1.0,1.974901896363424e-24,f1-mean,0.2762644914906183
+35,multi-label,VGG16,BCE,-0.9786545289474236,"[-0.99, -0.96]",55,1.0,1.7575277484684075e-39,f1-mean,0.4062611553966439
