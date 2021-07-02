@@ -1,5 +1,5 @@
 [![DOI](https://zenodo.org/badge/306959618.svg)](https://zenodo.org/badge/latestdoi/306959618)
-# Nicholson-Prinz-2020
+# Nicholson-Prinz-2021
 
 Code for the paper    
 "Deep neural network models of object recognition 
@@ -15,16 +15,16 @@ There are two main dependencies:
 A similar environment can be created with `conda` on Ubuntu using the `spec-file.txt` in this repository as follows:
 
 ```console
-$ git clone https://github.com/NickleDave/Nicholson-Prinz-2020.git
-$ cd Nicholson-Prinz-2020
-$ conda create --name Nicholson-Prinz-2020 --file spec-file.txt
+$ git clone https://github.com/NickleDave/Nicholson-Prinz-2021.git
+$ cd Nicholson-Prinz-2021
+$ conda create --name Nicholson-Prinz-2021 --file spec-file.txt
 ```
 
 You may also be able to create a suitable environment on other linux platforms using the `environment.yml` file.
 
 ```console
-$ git clone https://github.com/NickleDave/Nicholson-Prinz-2020.git
-$ cd Nicholson-Prinz-2020
+$ git clone https://github.com/NickleDave/Nicholson-Prinz-2021.git
+$ cd Nicholson-Prinz-2021
 $ conda env create -f environment.yml
 
 ```
@@ -38,5 +38,5 @@ DARPA cooperative agreement HR0011-18-2-0019
 R. Goldstone and L. Smith, Indiana University Bloomington.
 
 ## Citation
-If you use / adapt this code, please cite its DOI:
+If you use / adapt this code, please cite its DOI:  
 [![DOI](https://zenodo.org/badge/306959618.svg)](https://zenodo.org/badge/latestdoi/306959618)
