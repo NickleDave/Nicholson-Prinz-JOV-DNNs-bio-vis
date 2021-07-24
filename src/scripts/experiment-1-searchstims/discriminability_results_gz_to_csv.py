@@ -17,6 +17,7 @@ import searchnets
 EXPTS = (
     # training method, source dataset (in results dir path / .gz filename), dataset (human-readable name in column)
     ('initialize', '_', 'None'),  # '_' is there just to avoid error due to two consecutive asterisks in glob
+    ('transfer', 'searchstims_classify', 'search stimuli (classify)'),
     ('transfer', 'no_finetune', 'ImageNet'),
     ('transfer', 'SIN', 'Stylized ImageNet'),
     ('transfer', 'Clipart', 'DomainNet, Clipart domain'),
@@ -161,7 +162,7 @@ def get_parser():
                         help=('path to root of directory where "source data" csv files '
                               'that are generated should be saved'),
                         default='results/searchstims/source_data/discriminability')
-    parser.add_argument('--all_csv_filename', default='all.csv',
+    parser.add_argument('--all_csv_filename', default='all_discrim_expts.csv',
                         help=('filename for .csv that should be saved '
                               'that contains results from **all** results.gz files. '
                               'Saved in source_data_root.'))

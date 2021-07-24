@@ -28,6 +28,7 @@ EXPTS = (
     # training method, source dataset (in dir path / .gz filename),
     # dataset (human-readable name in column), source data dir name
     ('initialize', 'None', '10stims'),  # '_' is there just to avoid error due to two consecutive asterisks in glob
+    ('transfer', 'search stimuli (classify)', '10stims_searchstims_classify'),
     ('transfer', 'ImageNet', '10stims'),
     ('transfer', 'Stylized ImageNet', '10stims_SIN'),
     ('transfer', 'DomainNet, Clipart domain', '10stims_Clipart'),
