@@ -1,0 +1,7 @@
+net_name,stimulus,set_size_1_acc,set_size_8_acc,acc_diff
+VGG16,2_v_5,1.0,1.0,0.0
+VGG16,RVvGV,1.0,1.0,0.0
+VGG16,RVvRHGV,1.0,1.0,0.0
+alexnet,2_v_5,0.9231672932330827,0.6146616541353384,0.3085056390977443
+alexnet,RVvGV,1.0,1.0,0.0
+alexnet,RVvRHGV,1.0,1.0,0.0
