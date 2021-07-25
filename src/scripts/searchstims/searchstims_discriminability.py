@@ -30,7 +30,7 @@ def main():
         output_dir = OUTPUT_DIR.joinpath(f'{cnn}_multiple_stims_discriminability')
 
         stim_dict = {}
-        for yellowness in (51, 102, 153, 204):
+        for yellowness in [0, 23, 46, 70, 93, 116, 139, 162, 185, 209, 232, 255]:
             stim_key = f'RVvGV_{yellowness}'
             maker = RVvGVStimMaker(target_color=(255, yellowness, 0),
                                    distractor_color=(yellowness, 255, 0),
@@ -41,7 +41,7 @@ def main():
                                    jitter=JITTER)
             stim_dict[stim_key] = maker
 
-        for rotation in [18, 36, 54, 72]:
+        for rotation in [4, 8, 16, 25, 33, 41, 49, 57, 65, 74, 82, 90]:
             stim_key = f'TvT_{rotation}'
             maker = TStimMaker(window_size=window_size,
                                border_size=BORDER_SIZE,
