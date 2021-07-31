@@ -30,10 +30,11 @@ def main():
         output_dir = OUTPUT_DIR.joinpath(f'{cnn}_multiple_stims_discriminability')
 
         stim_dict = {}
-        for yellowness in [0, 23, 46, 70, 93, 116, 139, 162, 185, 209, 232, 255]:
-            stim_key = f'RVvGV_{yellowness}'
-            maker = RVvGVStimMaker(target_color=(255, yellowness, 0),
-                                   distractor_color=(yellowness, 255, 0),
+        for G in [0, 23, 46, 70, 93, 116, 139, 162, 185, 209, 232, 255]:
+            R = 255 - G
+            stim_key = f'RVvGV_{G}'
+            maker = RVvGVStimMaker(target_color=(R, G, 0),
+                                   distractor_color=(0, 255, 0),
                                    window_size=window_size,
                                    border_size=BORDER_SIZE,
                                    grid_size=GRID_SIZE,
