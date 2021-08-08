@@ -35,9 +35,38 @@ def fits_df_from_discrim_df(discrim_df,
                 (discrim_df.net_name == net_name) &
                 (discrim_df.method_source_dataset == method_source_dataset)
             ]
+
+            method = this_df.method.unique()
+            assert len(method) == 1
+            method = method[0]
+
+            source_dataset = this_df.source_dataset.unique()
+            assert len(source_dataset) == 1
+            source_dataset = source_dataset[0]
+
+            print(
+                f'fitting training replicates for {net_name}, '
+                f'trained with {method} method, pre-trained on dataset: {source_dataset}'
+            )
+
+            print(
+                f'length of dataframe: {len(this_df)}. '
+                f'Number of training replicates: {len(this_df.net_number.unique())} '
+            )
+
             for subject in this_df.net_number.unique():
                 df_subject = this_df[this_df.net_number == subject]
 
+                subject_acc = df_subject.accuracy.values
+                if np.all(subject_acc < threshold_acc):
+                    print(
+                        f'all accuracy values for net number {subject} are less than threshold accuracy, '
+                        f'skipping this training replicate.'
+                    )
+                    continue
+
+                subject_records = []
+                all_fits_ran = True
                 for set_size in df_subject.set_size.unique():
                     df_set_size = df_subject[df_subject.set_size == set_size]
                     df_set_size = df_set_size.sort_values(by='discrim_pct')
@@ -49,8 +78,10 @@ def fits_df_from_discrim_df(discrim_df,
                         params_cov = np.diag(pcov)
                     except RuntimeError:
                         print(
-                            f'fitting failed for {net_name}, {method_source_dataset}, net number {subject}, set size {set_size}'
+                            f'fitting failed for {net_name}, {method_source_dataset}, '
+                            f'net number {subject}, set size {set_size}'
                         )
+                        all_fits_ran = False
                         popt = params_cov = np.array([np.nan, np.nan])
 
                     y = psychometric_func(d_range, popt[0], popt[1])
@@ -58,7 +89,7 @@ def fits_df_from_discrim_df(discrim_df,
                     th_ind = np.argmin(np.abs(y - threshold_acc))
                     discrim_threshold = d_range[th_ind]
 
-                    records.append(
+                    subject_records.append(
                         {
                             'net_name': net_name,
                             'method': this_df.method.unique()[0],
@@ -73,6 +104,8 @@ def fits_df_from_discrim_df(discrim_df,
                             'discrim_threshold': discrim_threshold,
                         }
                     )
+                if all_fits_ran:  # only add fits for this subject if they all converged
+                    records.extend(subject_records)
 
     fits_df = pd.DataFrame.from_records(records)
     return fits_df
@@ -154,6 +187,7 @@ def main(results_dir,
             (df_rvg, df_tvt),
             ('rvg', 'tvt')
     ):
+        print(f'computing fits for stimulus type: {stim_type}')
         # ## Fit a psychometric function
         fits_df = fits_df_from_discrim_df(stim_df)
 
