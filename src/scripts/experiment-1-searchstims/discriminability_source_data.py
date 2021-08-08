@@ -117,6 +117,7 @@ def regress_net_number(fits_df):
 
 
 SOURCE_DATASETS_TO_USE = (
+    'None',  # initialized and trained just to classify search stimuli as target present / absent
     'search stimuli (classify)',
     'ImageNet',
     'Stylized ImageNet',
