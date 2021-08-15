@@ -1,0 +1,7 @@
+method,source_dataset,net_name,acc_largest
+transfer,search stimuli,alexnet,0.2082182320441989
+transfer,search stimuli,VGG16,0.26204247237569056
+initialize,Pascal VOC,VGG16,0.3525552486187845
+initialize,Pascal VOC,alexnet,0.39027969613259667
+transfer,ImageNet,alexnet,0.6515020718232044
+transfer,ImageNet,VGG16,0.7857821132596685
