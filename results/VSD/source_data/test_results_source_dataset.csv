@@ -1,7 +1,7 @@
-method,source_dataset,net_name,acc_largest
-transfer,search stimuli,alexnet,0.2082182320441989
-transfer,search stimuli,VGG16,0.26204247237569056
-initialize,Pascal VOC,VGG16,0.3525552486187845
-initialize,Pascal VOC,alexnet,0.39027969613259667
-transfer,ImageNet,alexnet,0.6515020718232044
-transfer,ImageNet,VGG16,0.7857821132596685
+method,source_dataset,net_name,acc_largest_mean,acc_largest_std
+transfer,ImageNet,VGG16,0.785782113,0.006964868
+transfer,ImageNet,alexnet,0.651502072,0.010171194
+initialize,Pascal VOC,alexnet,0.390279696,0.009595561
+initialize,Pascal VOC,VGG16,0.352555249,0.060057069
+transfer,search stimuli,VGG16,0.262042472,0.00432246
+transfer,search stimuli,alexnet,0.208218232,0
