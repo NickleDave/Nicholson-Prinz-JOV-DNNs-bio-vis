@@ -67,8 +67,12 @@ def main(args):
     )
 
     print(f'\nevaluating model on test set')
-    mAP, ap_class_map, gt_df_out = detection.engine.evaluate(model, data_loader_test, device,
-                                                             overlap_thresh=args.overlap_thresh)
+    (mAP,
+     ap_class_map,
+     gt_df_out,
+     gt_df,
+     pred_df) = detection.engine.evaluate(model, data_loader_test, device,
+                                          overlap_thresh=args.overlap_thresh)
     print(f'\nmAP: {mAP:0.4f}\n')
 
     ap_class_map_filename = eval_results_dir_path.joinpath(f'ap_class_map.joblib')
@@ -80,6 +84,9 @@ def main(args):
         class_label = class_label[0]
         gt_df_class_csv_filename = eval_results_dir_path.joinpath(f'gt_df_class_{class_label}.csv')
         gt_df_class.to_csv(gt_df_class_csv_filename, index=False)
+
+    gt_df.to_csv(eval_results_dir_path / 'gt_df.csv')
+    pred_df.to_csv(eval_results_dir_path / 'pred_df.csv')
 
 
 STIMS_ROOT = pyprojroot.here() / '..' / 'visual_search_stimuli'
