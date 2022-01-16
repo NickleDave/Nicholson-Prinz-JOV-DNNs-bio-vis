@@ -92,7 +92,7 @@ def main(args):
 STIMS_ROOT = pyprojroot.here() / '..' / 'visual_search_stimuli'
 
 DATASET_ROOT = STIMS_ROOT / 'alexnet_multiple_stims_v2'
-CSV_FILE = DATASET_ROOT / 'alexnet_multiple_stims_v2/alexnet_multiple_stims_balanced_split.csv'
+CSV_FILE = DATASET_ROOT / 'alexnet_multiple_stims_balanced_split.csv'
 RESULTS_DST = pyprojroot.here() / 'results' / 'detection'
 CKPT_FILENAME = 'checkpoint.pt'
 
