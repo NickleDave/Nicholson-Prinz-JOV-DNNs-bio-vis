@@ -37,7 +37,7 @@ def main():
     }
 
     gb_agg = classify_df.groupby('set_size').agg(
-        acc = pd.NamedAgg(column='accuracy', aggfunc="mean")
+        acc=pd.NamedAgg(column='accuracy', aggfunc="mean")
     )
     gb_agg = gb_agg.reset_index()
 
@@ -73,7 +73,7 @@ def main():
         assert len(distract_df) > len(target_df)
 
         gb_agg = target_df.groupby('img_set_size').agg(
-            acc = pd.NamedAgg(column='detected', aggfunc=acc_func)
+            acc=pd.NamedAgg(column='detected', aggfunc=acc_func)
         )
         gb_agg = gb_agg.reset_index()
 
