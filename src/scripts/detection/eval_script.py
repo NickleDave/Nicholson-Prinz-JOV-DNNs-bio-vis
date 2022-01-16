@@ -5,10 +5,91 @@ import json
 from pathlib import Path
 
 import joblib
+import numpy as np
 import pyprojroot
 import torch
+from tqdm import tqdm
 
 import detection
+
+
+def add_overlap_vals(gt_row, pred_rows):
+    """adds column with computed overlap values
+    (Intersection over Union) to the rows of a dataframe ``pred_rows``
+    where each row corresponds to a predicted bounding box,
+    and overlap is with the ground truth bounding box in ``gt_row``
+    """
+    pbar = tqdm(pred_rows.itertuples())
+
+    ovmax_vals = []
+    for pred_row_ind, pred_row in enumerate(pbar):
+        pred_bbox = np.array(
+            [pred_row.xmin, pred_row.ymin, pred_row.xmax, pred_row.ymax]
+        ).astype(float)
+
+        bbox_gt = gt_row.loc[:, ['xmin', 'ymin', 'xmax', 'ymax']].values.astype(float)
+
+        if bbox_gt.size > 0:  # compute overlap
+            # determine the (x, y)-coordinates of the intersection rectangle
+            ixmin = np.maximum(bbox_gt[:, 0], pred_bbox[0])
+            iymin = np.maximum(bbox_gt[:, 1], pred_bbox[1])
+            ixmax = np.minimum(bbox_gt[:, 2], pred_bbox[2])
+            iymax = np.minimum(bbox_gt[:, 3], pred_bbox[3])
+
+            # compute the area of intersection rectangle
+            iw = np.maximum(ixmax - ixmin + 1.0, 0.0)
+            ih = np.maximum(iymax - iymin + 1.0, 0.0)
+            intersection_area = iw * ih
+
+            # union
+            union_area = (
+                    (pred_bbox[2] - pred_bbox[0] + 1.0) * (pred_bbox[3] - pred_bbox[1] + 1.0)
+                    + (bbox_gt[:, 2] - bbox_gt[:, 0] + 1.0) * (bbox_gt[:, 3] - bbox_gt[:, 1] + 1.0)
+            )
+
+            overlaps = intersection_area / (union_area - intersection_area)
+            ovmax = np.max(overlaps)
+            ovmax_vals.append(ovmax)
+    pred_rows['overlap'] = ovmax_vals
+    return pred_rows
+
+
+def eckstein_analysis(gt_df, pred_df):
+    gt_target_df = gt_df[gt_df['class'] == 1]  # 1 = target, 2 = distractors
+
+    THRESH = 0.5
+
+    hit_miss_setsize = {
+        setsize: {'hits': 0, 'misses': 0} for setsize in gt_target_df['img_set_size'].unique()
+    }
+
+    pbar = tqdm(gt_target_df.id.unique())
+    for id in pbar:
+        gt_id_df = gt_target_df[gt_target_df.id == id].copy()  # will be a single row because only 1 target / image
+        setsize = gt_id_df['img_set_size'].values.item()
+        # we want all the predicted boxes, not just the ones that are target class
+        pred_id_df = pred_df[pred_df.id == id].copy()
+        pred_overlap_df = add_overlap_vals(gt_id_df, pred_id_df)
+        pred_overlap_df = pred_overlap_df[pred_overlap_df.overlap > THRESH].reset_index()
+        if len(pred_overlap_df) < 1:
+            # catch this first to prevent crash due to running argmax on 0 rows
+            hit_miss_setsize[setsize]['misses'] += 1
+        elif pred_overlap_df.iloc[pred_overlap_df['score'].idxmax()]['class'] == 1.0:
+            hit_miss_setsize[setsize]['hits'] += 1
+        else:
+            hit_miss_setsize[setsize]['misses'] += 1
+        pbar.set_description(
+            f'id: {id}, n pred. bbox: {len(pred_id_df)}, n. overlap with target: {len(pred_overlap_df)}, '
+            f'set size {setsize}, hits: {hit_miss_setsize[setsize]["hits"]}, '
+            f'misses: {hit_miss_setsize[setsize]["misses"]}'
+        )
+    hit_rate_setsize = {}
+    for setsize, hits_misses in hit_miss_setsize.items():
+        setsize = int(setsize)  # cast from np.int64
+        hits, misses = hit_miss_setsize[setsize]['hits'], hit_miss_setsize[setsize]['misses']
+        hr = hits / (hits + misses)
+        hit_rate_setsize[setsize] = hr
+    return hit_rate_setsize
 
 
 def main(args):
@@ -87,6 +168,10 @@ def main(args):
 
     gt_df.to_csv(eval_results_dir_path / 'gt_df.csv')
     pred_df.to_csv(eval_results_dir_path / 'pred_df.csv')
+
+    hit_rate_setsize = eckstein_analysis(gt_df, pred_df)
+    with eval_results_dir_path.joinpath(f'hit_rate_setsize.json').open('w') as fp:
+        json.dump(hit_rate_setsize, fp)
 
 
 STIMS_ROOT = pyprojroot.here() / '..' / 'visual_search_stimuli'
