@@ -53,7 +53,7 @@ def main():
         for key, val in zipped:
             csv_filename = f'{cnn}_big_set_and_sample_size_{key}.csv'
             stim_dict = {key: val}
-            output_dir = OUTPUT_DIR.joinpath(f'{cnn}_big_set_and_sample_size_{key}')
+            output_dir = OUTPUT_DIR.joinpath(f'{cnn}_big_set_and_sample_size')
             searchstims.make.make(root_output_dir=output_dir,
                                   stim_dict=stim_dict,
                                   csv_filename=csv_filename,
