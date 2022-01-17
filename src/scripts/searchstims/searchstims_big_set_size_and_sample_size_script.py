@@ -51,12 +51,12 @@ SET_SIZES = [1, 2, 4, 6, 8, 12, 18]
 def main():
     for cnn, zipped in zip(['alexnet', ], [alexnet_zip, ]):
         for key, val in zipped:
-            json_filename = f'{cnn}_big_set_and_sample_size_{key}.json'
+            csv_filename = f'{cnn}_big_set_and_sample_size_{key}.csv'
             stim_dict = {key: val}
             output_dir = OUTPUT_DIR.joinpath(f'{cnn}_big_set_and_sample_size_{key}')
             searchstims.make.make(root_output_dir=output_dir,
                                   stim_dict=stim_dict,
-                                  json_filename=json_filename,
+                                  csv_filename=csv_filename,
                                   num_target_present=TARGET_PRESENT,
                                   num_target_absent=TARGET_ABSENT,
                                   set_sizes=SET_SIZES)
