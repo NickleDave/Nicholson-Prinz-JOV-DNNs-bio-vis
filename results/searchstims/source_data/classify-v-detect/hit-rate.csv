@@ -1,0 +1,5 @@
+,network,task,objectness score threshold,n. region proposals (pre-NMS),n. region proposals (post-NMS),overlap threshold,hit rate (set size 1),hit rate (set size 2),hit rate (set size 4),hit rate (set size 8)
+0,VGG16,object detection,0.0,1000,1000,0.5,1.0,1.0,1.0,1.0
+1,VGG16,object detection,0.0,100,100,0.5,1.0,1.0,1.0,1.0
+2,VGG16,object detection,0.95,100,100,0.5,1.0,0.99875,1.0,1.0
+3,VGG16,object detection,0.95,100,100,0.95,1.0,0.99875,1.0,1.0
