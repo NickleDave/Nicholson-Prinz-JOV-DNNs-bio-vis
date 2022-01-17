@@ -184,4 +184,4 @@ def evaluate(model,
         [eval_result.ap for eval_result in ap_class_map.values()]
     ).mean()
 
-    return mAP, ap_class_map, gt_df_out
+    return mAP, ap_class_map, gt_df_out, gt_df, pred_df

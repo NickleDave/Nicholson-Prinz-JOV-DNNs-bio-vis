@@ -4,10 +4,13 @@
 that compares performance of VGG-16 trained for image classification
 with VGG-16 as part of an object detection model
 """
+import copy
 import json
 
 import pandas as pd
 import pyprojroot
+
+DETECTION_RESULTS_DIR = pyprojroot.here() / 'results/detection/results_210710_201826'
 
 
 def acc_func(s):
@@ -37,7 +40,7 @@ def main():
     }
 
     gb_agg = classify_df.groupby('set_size').agg(
-        acc = pd.NamedAgg(column='accuracy', aggfunc="mean")
+        acc=pd.NamedAgg(column='accuracy', aggfunc="mean")
     )
     gb_agg = gb_agg.reset_index()
 
@@ -47,9 +50,12 @@ def main():
     records.append(record)
 
     # now get results from object detection experiments
-    detect_results_root = pyprojroot.here() / 'results/detection/results_210710_201826'
-    detect_eval_results_dirs = sorted(detect_results_root.glob('eval_results_*'))
+    detect_results_root = pyprojroot.here() / DETECTION_RESULTS_DIR
+    detect_eval_results_dirs = sorted(
+        detect_results_root.glob('eval_results_*')  # the results of running eval_script.sh
+    )
 
+    hit_rate_records = []  # only get these from object detection models
     for eval_dir in detect_eval_results_dirs:
         args_json = eval_dir / 'args.json'
         with args_json.open('r') as fp:
@@ -73,14 +79,22 @@ def main():
         assert len(distract_df) > len(target_df)
 
         gb_agg = target_df.groupby('img_set_size').agg(
-            acc = pd.NamedAgg(column='detected', aggfunc=acc_func)
+            acc=pd.NamedAgg(column='detected', aggfunc=acc_func)
         )
         gb_agg = gb_agg.reset_index()
 
+        hit_rate_record = copy.deepcopy(record)  # deep copy before we add accuracies
         for set_size, acc in zip(gb_agg.img_set_size.values, gb_agg.acc.values):
             record[f'acc. (set size {set_size})'] = acc
 
         records.append(record)
+
+        # now get hit rates
+        with eval_dir.joinpath(f'hit_rate_setsize.json').open('r') as fp:
+            hit_rate_setsize = json.load(fp)
+        for set_size, hit_rate in hit_rate_setsize.items():
+            hit_rate_record[f'hit rate (set size {set_size})'] = hit_rate
+        hit_rate_records.append(hit_rate_record)
 
     # finally make DataFrame from records and save
     vgg16_summary_df = pd.DataFrame.from_records(records)
@@ -89,6 +103,14 @@ def main():
     )
     vgg16_summary_df.to_excel(
         pyprojroot.here() / 'results' / 'searchstims' / 'source_data' / 'classify-v-detect' / 'table.xlsx'
+    )
+
+    vgg16_hitrate_summary_df = pd.DataFrame.from_records(hit_rate_records)
+    vgg16_hitrate_summary_df.to_csv(
+        pyprojroot.here() / 'results' / 'searchstims' / 'source_data' / 'classify-v-detect' / 'hit-rate.csv'
+    )
+    vgg16_hitrate_summary_df.to_excel(
+        pyprojroot.here() / 'results' / 'searchstims' / 'source_data' / 'classify-v-detect' / 'hit-rate.xlsx'
     )
 
 
