@@ -19,5 +19,6 @@ results/checkpoints/*/
 results/csv/
 results/searchstims/checkpoints
 results/searchstims/activations
+results/searchstims/source_data/filter-similarity/
 results/VSD/
 results/detection
