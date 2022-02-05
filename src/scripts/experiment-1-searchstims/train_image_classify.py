@@ -255,9 +255,13 @@ def main_worker(gpu, ngpus_per_node, args):
     # define loss function (criterion) and optimizer
     criterion = nn.CrossEntropyLoss().cuda(args.gpu)
 
-    optimizer = torch.optim.SGD(model.parameters(), args.lr,
-                                momentum=args.momentum,
-                                weight_decay=args.weight_decay)
+    if args.optimizer == 'SGD':
+        optimizer = torch.optim.SGD(model.parameters(), args.lr,
+                                    momentum=args.momentum,
+                                    weight_decay=args.weight_decay)
+    elif args.optimizer == 'Adam':
+        optimizer = torch.optim.Adam(model.parameters(), args.lr,
+                                     weight_decay=args.weight_decay)
 
     # optionally resume from a checkpoint
     if args.resume:
@@ -286,8 +290,8 @@ def main_worker(gpu, ngpus_per_node, args):
     # Data loading code
     traindir = os.path.join(args.data, 'train')
     valdir = os.path.join(args.data, 'val')
-    normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                                     std=[0.229, 0.224, 0.225])
+    normalize = transforms.Normalize(mean=args.mean,
+                                     std=args.std)
 
     train_dataset = datasets.ImageFolder(
         traindir,
@@ -385,15 +389,30 @@ MODEL_NAMES = sorted(name for name in models.__dict__
     and callable(models.__dict__[name]))
 
 
+DEFAULT_MEAN = [float(x) for x in '0.485,0.456,0.406'.split(',')]
+DEFAULT_STD = [float(x) for x in '0.229,0.224,0.225'.split(',')]
+
+
 def get_parser():
     parser = argparse.ArgumentParser(description='script to train DNN models to classify image dataset')
     parser.add_argument('data', metavar='DIR',
                         help='path to dataset')
+    parser.add_argument('--mean',
+                        help='channel-wise means, comma-separated list',
+                        type=lambda x: [float(x) for x in x.split(',')],
+                        default=DEFAULT_MEAN,
+                        )
+    parser.add_argument('--std',
+                        help='chanel-wise standard deviations, comma-separate list',
+                        type=lambda x: [float(x) for x in x.split(',')],
+                        default=DEFAULT_STD,
+    )
     parser.add_argument('-a', '--arch', metavar='ARCH', default='resnet18',
                         choices=MODEL_NAMES,
                         help='model architecture: ' +
                              ' | '.join(MODEL_NAMES) +
                              ' (default: resnet18)')
+    parser.add_argument('--optimizer', type=str, choices={'SGD', 'Adam'}, default='SGD')
     parser.add_argument('-j', '--workers', default=4, type=int, metavar='N',
                         help='number of data loading workers (default: 4)')
     parser.add_argument('--epochs', default=90, type=int, metavar='N',
