@@ -1,0 +1,5 @@
+acc,loss_func,method,net_name,replicate,restore_path
+0.9497282608695652,CE-VSD,transfer,alexnet,1,/home/bart/Documents/repos/coding/L2M/Nicholson-Prinz-2021/results/VSD/checkpoints/alexnet_searchstims_dog/trained_200_epochs/net_number_4/alexnet_trained_200_epochs_number_4
+0.9480298913043478,CE-VSD,transfer,alexnet,2,/home/bart/Documents/repos/coding/L2M/Nicholson-Prinz-2021/results/VSD/checkpoints/alexnet_searchstims_dog/trained_200_epochs/net_number_4/alexnet_trained_200_epochs_number_4
+0.9456521739130435,CE-VSD,transfer,alexnet,3,/home/bart/Documents/repos/coding/L2M/Nicholson-Prinz-2021/results/VSD/checkpoints/alexnet_searchstims_dog/trained_200_epochs/net_number_4/alexnet_trained_200_epochs_number_4
+0.9483695652173914,CE-VSD,transfer,alexnet,4,/home/bart/Documents/repos/coding/L2M/Nicholson-Prinz-2021/results/VSD/checkpoints/alexnet_searchstims_dog/trained_200_epochs/net_number_4/alexnet_trained_200_epochs_number_4
