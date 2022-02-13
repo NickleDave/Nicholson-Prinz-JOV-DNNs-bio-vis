@@ -322,7 +322,18 @@ def main_worker(gpu, ngpus_per_node, args):
         num_workers=args.workers, pin_memory=True)
 
     if args.evaluate:
-        validate(val_loader, model, criterion, args)
+        testdir = os.path.join(args.data, 'test')
+        test_loader = torch.utils.data.DataLoader(
+            datasets.ImageFolder(testdir, transforms.Compose([
+                transforms.Resize(256),
+                transforms.CenterCrop(224),
+                transforms.ToTensor(),
+                normalize,
+            ])),
+            batch_size=args.batch_size, shuffle=False,
+            num_workers=args.workers, pin_memory=True)
+
+        validate(test_loader, model, criterion, args)
         return
 
     for epoch in range(args.start_epoch, args.epochs):
