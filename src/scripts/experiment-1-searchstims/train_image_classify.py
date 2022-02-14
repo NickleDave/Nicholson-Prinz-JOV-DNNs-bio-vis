@@ -17,6 +17,7 @@ import shutil
 import time
 import warnings
 
+import searchnets
 import torch
 import torch.nn as nn
 import torch.nn.parallel
@@ -213,10 +214,12 @@ def main_worker(gpu, ngpus_per_node, args):
     # create model
     if args.pretrained:
         print("=> using pre-trained model '{}' with num_classes={}".format(args.arch, args.num_classes))
-        model = models.__dict__[args.arch](pretrained=True, num_classes=args.num_classes)
     else:
         print("=> creating model '{}' with num_classes={}".format(args.arch, args.num_classes))
-        model = models.__dict__[args.arch](num_classes=args.num_classes)
+    if args.arch in {'CORnet_S', 'CORnet_Z'}:
+        model = searchnets.nets.cornet.build(args.arch, pretrained=args.pretrained, num_classes=args.num_classes)
+    else:
+        model = models.__dict__[args.arch](pretrained=args.pretrained, num_classes=args.num_classes)
 
     if not torch.cuda.is_available():
         print('using CPU, this will be slow')
@@ -384,6 +387,8 @@ def main(args):
 MODEL_NAMES = sorted(name for name in models.__dict__
     if name.islower() and not name.startswith("__")
     and callable(models.__dict__[name]))
+
+MODEL_NAMES.extend(['CORnet_Z', 'CORnet_S'])
 
 
 DEFAULT_MEAN = [float(x) for x in '0.485,0.456,0.406'.split(',')]
