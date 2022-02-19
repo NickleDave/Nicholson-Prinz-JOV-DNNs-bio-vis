@@ -124,7 +124,7 @@ def main(results_gz_root,
                     df_stimulus = df_net_number[df_net_number['stimulus'] == stimulus]
                     set_size_1_acc = df_stimulus[df_stimulus['set_size'] == 1]['accuracy'].values.item()
                     set_size_8_acc = df_stimulus[df_stimulus['set_size'] == 8]['accuracy'].values.item()
-                    acc_diff = set_size_1_acc - set_size_8_acc
+                    acc_diff = set_size_8_acc - set_size_1_acc
                     records.append(
                         {
                             'net_name': net_name,
