@@ -13,7 +13,7 @@ import searchnets
 def main(results_gz_root,
          source_data_root,
          all_csv_filename,
-         acc_diff_csv_filename,
+         err_effect_csv_filename,
          net_names,
          methods,
          modes,
@@ -34,9 +34,9 @@ def main(results_gz_root,
     all_csv_filename : str
         filename for .csv saved that contains results from **all** results.gz files.
         Saved in source_data_root.
-    acc_diff_csv_filename : str
+    err_effect_csv_filename : str
         filename for .csv should be saved that contains group analysis derived from all results,
-        with difference in accuracy between set size 1 and 8.
+        with a measure of set size effect.
         Saved in source_data_root.
     net_names : list
         of str, neural network architecture names
@@ -122,9 +122,11 @@ def main(results_gz_root,
                 df_net_number = df_net[df_net['net_number'] == net_number]
                 for stimulus in df_net_number['stimulus'].unique():
                     df_stimulus = df_net_number[df_net_number['stimulus'] == stimulus]
-                    set_size_1_acc = df_stimulus[df_stimulus['set_size'] == 1]['accuracy'].values.item()
-                    set_size_8_acc = df_stimulus[df_stimulus['set_size'] == 8]['accuracy'].values.item()
-                    acc_diff = set_size_8_acc - set_size_1_acc
+                    set_size_1_acc = df_stimulus[df_stimulus['set_size'] == 1]['accuracy'].values.item() * 100
+                    set_size_8_acc = df_stimulus[df_stimulus['set_size'] == 8]['accuracy'].values.item() * 100
+                    set_size_1_err = (100. - set_size_1_acc)
+                    set_size_effect = set_size_1_acc - set_size_8_acc
+
                     records.append(
                         {
                             'net_name': net_name,
@@ -132,17 +134,28 @@ def main(results_gz_root,
                             'stimulus': stimulus,
                             'set_size_1_acc': set_size_1_acc,
                             'set_size_8_acc': set_size_8_acc,
-                            'acc_diff': acc_diff,
+                            'set_size_1_err': set_size_1_err,
+                            'set_size_effect': set_size_effect,
+                            'set_size_1_err_plus_effect': set_size_1_err + set_size_effect
                         }
                     )
 
         df_acc_diff = pd.DataFrame.from_records(records)
         df_acc_diff = df_acc_diff[
             # put columns in order
-            ['net_name', 'net_number', 'stimulus', 'set_size_1_acc', 'set_size_8_acc', 'acc_diff']
+            [
+                'net_name',
+                'net_number',
+                'stimulus',
+                'set_size_1_acc',
+                'set_size_8_acc',
+                'set_size_1_err',
+                'set_size_effect',
+                'set_size_1_err_plus_effect',
+            ]
         ]
 
-        df_acc_diff.to_csv(source_data_root.joinpath(f'{method}-{acc_diff_csv_filename}'), index=False)
+        df_acc_diff.to_csv(source_data_root.joinpath(f'{method}-{err_effect_csv_filename}'), index=False)
 
 
 ROOT = pyprojroot.here()
@@ -187,10 +200,10 @@ def get_parser():
                         help=('filename for .csv that should be saved '
                               'that contains results from **all** results.gz files. '
                               'Saved in source_data_root.'))
-    parser.add_argument('--acc_diff_csv_filename', default='acc-diff.csv',
+    parser.add_argument('-err_effect_csv_filename', default='set-size-1-error-plus-effect.csv',
                         help=("filename for .csv should be saved "
                               "that contains group analysis derived from all results, "
-                              "with difference in accuracy between set size 1 and 8. "
+                              "with a measure for set size effect. "
                               "Saved in source_data_root"))
     parser.add_argument('--net_names', default=NET_NAMES,
                         help='comma-separated list of neural network architecture names',
@@ -216,7 +229,7 @@ if __name__ == '__main__':
     main(results_gz_root=args.results_gz_root,
          source_data_root=args.source_data_root,
          all_csv_filename=args.all_csv_filename,
-         acc_diff_csv_filename=args.acc_diff_csv_filename,
+         err_effect_csv_filename=args.err_effect_csv_filename,
          net_names=args.net_names,
          methods=args.methods,
          modes=args.modes,
