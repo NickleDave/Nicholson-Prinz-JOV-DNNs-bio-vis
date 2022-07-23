@@ -1,9 +1,9 @@
 [![DOI](https://zenodo.org/badge/306959618.svg)](https://zenodo.org/badge/latestdoi/306959618)
 # Nicholson-Prinz-2021
 
-Code for the paper    
-"Deep neural network models of object recognition 
-exhibit human-like performance limitations when performing visual search tasks"
+Code for the paper:    
+"Could simplified stimuli change how the brain performs visual search tasks? A deep neural network study"
+https://jov.arvojournals.org/article.aspx?articleid=2778890  
 
 ## Installation
 Experiments were run in an environment created with [`conda`](https://docs.conda.io/en/latest/) on Ubuntu 16.04.
@@ -23,8 +23,8 @@ $ conda create --name Nicholson-Prinz-2021 --file spec-file.txt
 You may also be able to create a suitable environment on other linux platforms using the `environment.yml` file.
 
 ```console
-$ git clone https://github.com/NickleDave/Nicholson-Prinz-2021.git
-$ cd Nicholson-Prinz-2021
+$ git clone https://github.com/NickleDave/Nicholson-Prinz-JOV-DNNs-bio-vis
+$ cd Nicholson-Prinz-JOV-DNNs-bio-vis
 $ conda env create -f environment.yml
 
 ```
