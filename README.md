@@ -1,5 +1,5 @@
 [![DOI](https://zenodo.org/badge/306959618.svg)](https://zenodo.org/badge/latestdoi/306959618)
-# Nicholson-Prinz-2021
+# Nicholson-Prinz-JOV-DNNs-bio-vis
 
 Code for the paper:    
 "Could simplified stimuli change how the brain performs visual search tasks? A deep neural network study"
